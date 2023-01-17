@@ -7,6 +7,7 @@ services:
     mem_limit: 700m
     ports:
       - "8000:8000"
+      - "8001:8001"
     networks:
       - currency-network
     depends_on:
@@ -18,75 +19,7 @@ services:
       RABBIT_URI: amqp://guest:guest@rabbitmq:5672
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_ZIPKIN_SENDER_TYPE: rabbit
-
-  currency-conversion:
-    image: lddelz/currency-conversion-service:0.0.1-SNAPSHOT
-    mem_limit: 700m
-    ports:
-      - "8100:8100"
-    networks:
-      - currency-network
-    depends_on:
-      - naming-server
-      - rabbitmq
-    environment:
-      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
-      SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411/
-      RABBIT_URI: amqp://guest:guest@rabbitmq:5672
-      SPRING_RABBITMQ_HOST: rabbitmq
-      SPRING_ZIPKIN_SENDER_TYPE: rabbit
-    
-  limits-service:
-    image: lddelz/limits-service:0.0.1-SNAPSHOT 
-    mem_limit: 700m
-    ports:
-      - "8720:8720"
-    networks:
-      - currency-network
-    depends_on:
-      - naming-server
-      - rabbitmq
-    environment:
-      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
-      SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411/
-      RABBIT_URI: amqp://guest:guest@rabbitmq:5672
-      SPRING_RABBITMQ_HOST: rabbitmq
-      SPRING_ZIPKIN_SENDER_TYPE: rabbit
-
-  api-gateway:
-    image: lddelz/api-gateway:0.0.1-SNAPSHOT
-    mem_limit: 700m
-    ports:
-      - "8765:8765"
-    networks:
-      - currency-network
-    depends_on:
-      - naming-server
-      - rabbitmq
-    environment:
-      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
-      SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411/
-      RABBIT_URI: amqp://guest:guest@rabbitmq:5672
-      SPRING_RABBITMQ_HOST: rabbitmq
-      SPRING_ZIPKIN_SENDER_TYPE: rabbit
-      
-  spring-cloud-config-server:
-    image: lddelz/spring-cloud-config-server:0.0.1-SNAPSHOT
-    mem_limit: 700m
-    ports:
-      - "8888:8888"
-    networks:
-      - currency-network
-    depends_on:
-      - naming-server
-      - rabbitmq
-    environment:
-      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
-      SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411/
-      RABBIT_URI: amqp://guest:guest@rabbitmq:5672
-      SPRING_RABBITMQ_HOST: rabbitmq
-      SPRING_ZIPKIN_SENDER_TYPE: rabbit
-      
+  
   spring-boot-admin:
     image: lddelz/spring-boot-admin:0.0.1-SNAPSHOT
     mem_limit: 700m
@@ -106,12 +39,10 @@ services:
       - "8761:8761"
     networks:
       - currency-network
-    environment:
-      SPRING.BOOT.ADMIN.CLIENT.URL: http://spring-boot-admin:9090
 
   zipkin-server:
     image: openzipkin/zipkin:2.23
-    mem_limit: 300m
+    mem_limit: 700m
     ports:
       - "9411:9411"
     networks:
@@ -124,7 +55,7 @@ services:
 
   rabbitmq:
     image: rabbitmq:3.8.12-management
-    mem_limit: 300m
+    mem_limit: 700m
     ports:
       - "5672:5672"
       - "15672:15672"
